@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Toko Buku - Data Buku</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --kayu: #5b3a29;
+      --kayu-gelap: #3e2518;
+      --krem: #fbf5e9;
+      --kertas: #fffdf8;
+      --emas: #c8963e;
+      --hijau: #2f6b4f;
+      --merah: #b3402f;
+      --garis: #e6d8bd;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: "Nunito", Arial, sans-serif;
+      margin: 0;
+      padding: 0 20px 30px;
+      background-color: var(--krem);
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(200, 150, 62, 0.08) 0, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(91, 58, 41, 0.06) 0, transparent 40%);
+      color: var(--kayu-gelap);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ===== Header / Navbar ===== */
+    .topbar {
+      background: linear-gradient(135deg, var(--kayu-gelap), var(--kayu));
+      color: var(--krem);
+      margin: 0 -20px 0;
+      padding: 18px 20px;
+      border-bottom: 4px solid var(--emas);
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon { font-size: 34px; }
+
+    .brand h1 {
+      font-family: "Lora", Georgia, serif;
+      font-size: 26px;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+
+    .brand small {
+      display: block;
+      font-family: "Nunito", sans-serif;
+      font-size: 12px;
+      color: #e8d5ae;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .logout {
+      display: inline-block;
+      background-color: transparent;
+      border: 1.5px solid var(--emas);
+      padding: 8px 18px;
+      color: var(--krem);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .logout:hover {
+      background-color: var(--emas);
+      color: var(--kayu-gelap);
+    }
+
+    .promo {
+      background: var(--emas);
+      color: var(--kayu-gelap);
+      margin: 0 -20px;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 6px 0;
+    }
+
+    /* ===== Judul ===== */
+    h2 {
+      font-family: "Lora", Georgia, serif;
+      text-align: center;
+      color: var(--kayu);
+      font-size: 30px;
+      margin: 28px 0 4px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #8a6f58;
+      margin: 0 0 18px;
+      font-size: 14px;
+    }
+
+    .divider {
+      width: 90px;
+      height: 3px;
+      background: var(--emas);
+      margin: 0 auto 20px;
+      border-radius: 3px;
+    }
+
+    /* ===== Tombol ===== */
+    .btn {
+      background-color: var(--hijau);
+      color: white;
+      padding: 9px 18px;
+      border: none;
+      cursor: pointer;
+      margin: 5px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      transition: transform 0.15s, box-shadow 0.15s, background-color 0.15s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-edit { background-color: var(--emas); color: var(--kayu-gelap); }
+    .btn-delete { background-color: var(--merah); }
+    .btn-brown { background-color: var(--kayu); }
+    .btn-small { padding: 5px 12px; font-size: 13px; margin: 0; }
+
+    .btn-row {
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    /* ===== Tabel ===== */
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--kertas);
+      border: 1px solid var(--garis);
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(62, 37, 24, 0.12);
+      margin: 20px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--garis);
+      padding: 12px 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: var(--kayu);
+      color: var(--krem);
+      font-family: "Lora", Georgia, serif;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    tbody tr:nth-child(even) { background-color: #faf2e2; }
+    tbody tr:hover { background-color: #f4e6c8; }
+
+    td:nth-child(3) {
+      font-family: "Lora", Georgia, serif;
+      font-weight: 700;
+      color: var(--kayu);
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .gambar-preview {
+      width: 60px;
+      height: 85px;
+      object-fit: cover;
+      border-radius: 3px 6px 6px 3px;
+      border: 1px solid #cdb78e;
+      box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.25);
+      border-left: 5px solid var(--kayu);
+    }
+
+    .checkbox-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--hijau);
+    }
+
+    /* ===== Pencarian ===== */
+    .search-container {
+      position: relative;
+      display: inline-block;
+      margin: 10px 0;
+    }
+
+    .search-container input {
+      padding: 10px 38px 10px 16px;
+      width: 300px;
+      max-width: 100%;
+      border-radius: 999px;
+      border: 1.5px solid var(--emas);
+      background: var(--kertas);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .search-container input:focus {
+      box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.25);
+    }
+
+    .clear-search {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      font-size: 20px;
+      display: none;
+    }
+
+    .clear-search:hover { color: var(--merah); }
+
+    .search-history {
+      margin: 10px auto;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .search-history-title {
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #8a6f58;
+    }
+
+    .history-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .history-tag {
+      background-color: #f1e3c3;
+      border: 1px solid var(--garis);
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .history-tag:hover { background-color: #e8d4a8; }
+
+    .history-tag-close {
+      margin-left: 6px;
+      color: #8a6f58;
+      font-size: 14px;
+    }
+
+    .history-tag-close:hover { color: var(--merah); }
+
+    .select-all-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      justify-content: center;
+    }
+
+    /* ===== Popup Form ===== */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(40, 22, 12, 0.6);
+      z-index: 99;
+    }
+
+    .form-popup {
+      display: none;
+      border: 2px solid var(--emas);
+      padding: 24px;
+      background-color: var(--kertas);
+      width: 90%;
+      max-width: 420px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      border-radius: 12px;
+      z-index: 100;
+    }
+
+    .form-popup h3 {
+      font-family: "Lora", Georgia, serif;
+      color: var(--kayu);
+      margin: 0 0 16px;
+      text-align: center;
+    }
+
+    .form-popup input[type="text"],
+    .form-popup input[type="file"],
+    .form-popup input[type="number"] {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 10px;
+      border: 1px solid var(--garis);
+      border-radius: 6px;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    .form-popup input:focus {
+      outline: none;
+      border-color: var(--emas);
+      box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.2);
+    }
+
+    .form-popup button {
+      width: 48%;
+      margin: 1%;
+    }
+
+    footer {
+      text-align: center;
+      color: #8a6f58;
+      font-size: 13px;
+      margin-top: 30px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--garis);
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 0 10px 20px; }
+      .topbar, .promo { margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; }
+      .brand h1 { font-size: 20px; }
+      th, td { padding: 8px 5px; font-size: 13px; }
+      .search-container input { width: 240px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-icon">📚</span>
+        <h1>Toko Buku Pustaka<small>Teman Membaca Setiap Hari</small></h1>
+      </div>
+      <a href="login.html" class="logout" onclick="return logout()">Logout</a>
+    </div>
+  </div>
+
+  <div class="promo">
+    <marquee>📖 Selamat datang di Toko Buku Pustaka &nbsp;•&nbsp; Kelola koleksi buku dengan mudah &nbsp;•&nbsp; Membaca adalah jendela dunia 📖</marquee>
+  </div>
+
+  <div class="container">
+    <h2>Koleksi Buku</h2>
+    <p class="subtitle">Kelola data judul, pengarang, penerbit, dan sampul buku</p>
+    <div class="divider"></div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="showForm()">+ Tambah Buku</button>
+    </div>
+
+    <!-- Search Input dengan tombol hapus -->
+    <div class="btn-row">
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="🔍 Cari judul, pengarang, penerbit..."
+          onkeyup="handleSearch()"
+        />
+        <button class="clear-search" id="clearSearch" onclick="clearSearch()">×</button>
+      </div>
+    </div>
+
+    <div class="search-history" id="searchHistoryContainer">
+      <div class="search-history-title">Riwayat Pencarian:</div>
+      <div class="history-tags" id="historyTags"></div>
+    </div>
+
+    <div class="select-all-container" id="selectAllContainer" style="display: none;">
+      <button class="btn btn-brown" onclick="bersihkanRiwayatPencarian()">Bersihkan Riwayat</button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="produkTable">
+        <thead>
+          <tr>
+            <th>Pilih</th>
+            <th>No</th>
+            <th>Judul</th>
+            <th>Pengarang</th>
+            <th>Penerbit</th>
+            <th>Sampul</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="produkBody">
+          <!-- Data akan ditampilkan di sini -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-delete" onclick="deleteSelected()">Hapus Pilihan</button>
+      <button class="btn btn-delete" onclick="deleteAll()">Hapus Semua</button>
+    </div>
+
+    <footer>© 2026 Toko Buku Pustaka. Semua hak dilindungi.</footer>
+  </div>
+
+  <!-- Form Popup -->
+  <div class="overlay" id="overlay" onclick="tutupForm()"></div>
+  <div class="form-popup" id="formPopup">
+    <h3 id="formTitle">Tambah Buku</h3>
+    <input type="number" id="no" placeholder="Nomor" readonly />
+    <input type="text" id="judul" placeholder="Judul Buku" required />
+    <input type="text" id="pengarang" placeholder="Pengarang" required />
+    <input type="text" id="penerbit" placeholder="Penerbit" required />
+    <input type="text" id="gambarUrl" placeholder="URL Sampul Buku (opsional)" />
+    <input type="file" id="gambarFile" accept=".jpg,.jpeg,.png" />
+
+    <div>
+      <button class="btn" onclick="simpanProduk()">Simpan</button>
+      <button class="btn btn-delete" onclick="tutupForm()">Batal</button>
+    </div>
+  </div>
+
+  <script>
+    let produkList = JSON.parse(localStorage.getItem("produkList")) || [];
+    let searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+    let editIndex = null;
+    let selectedItems = [];
+
+    // Fungsi untuk mendapatkan nomor berikutnya
+    function getNextNo() {
+      if (produkList.length === 0) {
+        return 1;
+      }
+      const maxNo = Math.max(...produkList.map(produk => produk.no || 0));
+      return maxNo + 1;
+    }
+
+    // Fungsi untuk menangani pencarian
+    function handleSearch() {
+      const searchText = document.getElementById("searchInput").value.trim();
+      const clearButton = document.getElementById("clearSearch");
+
+      clearButton.style.display = searchText ? "block" : "none";
+
+      searchProduk();
+
+      if (searchText && !searchHistory.includes(searchText)) {
+        searchHistory.push(searchText);
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+        renderSearchHistory();
+      }
+    }
+
+    // Fungsi untuk menampilkan riwayat pencarian
+    function renderSearchHistory() {
+      const historyTagsContainer = document.getElementById("historyTags");
+      historyTagsContainer.innerHTML = "";
+
+      if (searchHistory.length === 0) {
+        document.getElementById("searchHistoryContainer").style.display = "none";
+        return;
+      }
+
+      document.getElementById("searchHistoryContainer").style.display = "block";
+
+      searchHistory.forEach((term, index) => {
+        const tag = document.createElement("div");
+        tag.className = "history-tag";
+
+        const termLabel = document.createElement("span");
+        termLabel.textContent = term;
+        termLabel.addEventListener("click", () => applySearch(term));
+
+        const closeButton = document.createElement("span");
+        closeButton.className = "history-tag-close";
+        closeButton.textContent = "×";
+        closeButton.setAttribute("role", "button");
+        closeButton.setAttribute("aria-label", "Hapus riwayat pencarian");
+        closeButton.addEventListener("click", (event) => removeSearchTerm(index, event));
+
+        tag.append(termLabel, closeButton);
+        historyTagsContainer.appendChild(tag);
+      });
+    }
+
+    function applySearch(term) {
+      document.getElementById("searchInput").value = term;
+      searchProduk();
+      document.getElementById("clearSearch").style.display = "block";
+    }
+
+    function removeSearchTerm(index, event) {
+      if (event) event.stopPropagation();
+      searchHistory.splice(index, 1);
+      localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+      renderSearchHistory();
+    }
+
+    function clearSearchHistory() {
+      if (confirm("Yakin ingin menghapus semua riwayat pencarian?")) {
+        searchHistory = [];
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+        renderSearchHistory();
+      }
+    }
+
+    function bersihkanRiwayatPencarian() {
+      if (confirm("Yakin ingin menghapus semua riwayat pencarian?")) {
+        searchHistory = [];
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+        renderSearchHistory();
+        alert("Riwayat pencarian telah dibersihkan.");
+      }
+    }
+
+    function showForm(index = null) {
+      const form = document.getElementById("formPopup");
+      const overlay = document.getElementById("overlay");
+      form.style.display = "block";
+      overlay.style.display = "block";
+      document.getElementById("formTitle").innerText = index !== null ? "Edit Buku" : "Tambah Buku";
+
+      if (index !== null) {
+        const produk = produkList[index];
+        document.getElementById("no").value = produk.no;
+        document.getElementById("judul").value = produk.judul;
+        document.getElementById("pengarang").value = produk.pengarang;
+        document.getElementById("penerbit").value = produk.penerbit;
+        document.getElementById("gambarUrl").value = produk.gambar || "";
+        document.getElementById("gambarFile").value = "";
+        editIndex = index;
+      } else {
+        clearForm();
+        editIndex = null;
+      }
+    }
+
+    function clearForm() {
+      if (editIndex === null) {
+        document.getElementById("no").value = getNextNo();
+      }
+      document.getElementById("judul").value = "";
+      document.getElementById("pengarang").value = "";
+      document.getElementById("penerbit").value = "";
+      document.getElementById("gambarUrl").value = "";
+      document.getElementById("gambarFile").value = "";
+      if (editIndex !== null) {
+        editIndex = null;
+      }
+    }
+
+    function simpanProduk() {
+      const no = parseInt(document.getElementById("no").value);
+      const judul = document.getElementById("judul").value.trim();
+      const pengarang = document.getElementById("pengarang").value.trim();
+      const penerbit = document.getElementById("penerbit").value.trim();
+      const gambarUrl = document.getElementById("gambarUrl").value.trim();
+      const gambarFileInput = document.getElementById("gambarFile");
+      const file = gambarFileInput.files[0];
+
+      if (!judul || !pengarang || !penerbit) {
+        alert("Judul, Pengarang, dan Penerbit wajib diisi.");
+        return;
+      }
+
+      if (editIndex === null) {
+        const existingNo = produkList.find(produk => produk.no === no);
+        if (existingNo) {
+          alert("Nomor sudah digunakan. Silakan gunakan nomor lain.");
+          return;
+        }
+      } else {
+        const existingNo = produkList.find((produk, index) => produk.no === no && index !== editIndex);
+        if (existingNo) {
+          alert("Nomor sudah digunakan. Silakan gunakan nomor lain.");
+          return;
+        }
+      }
+
+      function saveProduk(gambar) {
+        if (!gambar && editIndex !== null && produkList[editIndex]) {
+          gambar = produkList[editIndex].gambar || "";
+        }
+        const produkBaru = { no, judul, pengarang, penerbit, gambar };
+
+        if (editIndex !== null) {
+          produkList[editIndex] = produkBaru;
+        } else {
+          produkList.push(produkBaru);
+        }
+
+        localStorage.setItem("produkList", JSON.stringify(produkList));
+        renderTabel();
+        tutupForm();
+      }
+
+      if (file) {
+        const validTypes = ["image/jpeg", "image/png"];
+        if (!validTypes.includes(file.type)) {
+          alert("Format file harus JPG atau PNG.");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          saveProduk(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        saveProduk(gambarUrl);
+      }
+    }
+
+    function renderTabel(filter = "") {
+      const tbody = document.getElementById("produkBody");
+      tbody.innerHTML = "";
+
+      const filtered = produkList.filter((produk) => {
+        const lowerFilter = filter.toLowerCase();
+        return (
+          String(produk.judul || "").toLowerCase().includes(lowerFilter) ||
+          String(produk.pengarang || "").toLowerCase().includes(lowerFilter) ||
+          String(produk.penerbit || "").toLowerCase().includes(lowerFilter) ||
+          String(produk.no || "").includes(lowerFilter)
+        );
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">📭 Buku tidak ditemukan</td></tr>`;
+        document.getElementById("selectAllContainer").style.display =
+          searchHistory.length > 0 ? "flex" : "none";
+        return;
+      }
+
+      document.getElementById("selectAllContainer").style.display =
+        searchHistory.length > 0 ? "flex" : "none";
+
+      filtered.sort((a, b) => (a.no || 0) - (b.no || 0));
+
+      filtered.forEach((produk) => {
+        const tr = document.createElement("tr");
+        const originalIndex = produkList.indexOf(produk);
+
+        const checkboxTd = document.createElement("td");
+        checkboxTd.className = "checkbox-container";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = originalIndex;
+        checkbox.checked = selectedItems.includes(originalIndex);
+        checkbox.onchange = function () {
+          toggleSelectItem(originalIndex, this.checked);
+        };
+        checkboxTd.appendChild(checkbox);
+        tr.appendChild(checkboxTd);
+
+        const noTd = document.createElement("td");
+        noTd.textContent = produk.no || "-";
+        tr.appendChild(noTd);
+
+        const judulTd = document.createElement("td");
+        judulTd.textContent = produk.judul;
+        tr.appendChild(judulTd);
+
+        const pengarangTd = document.createElement("td");
+        pengarangTd.textContent = produk.pengarang;
+        tr.appendChild(pengarangTd);
+
+        const penerbitTd = document.createElement("td");
+        penerbitTd.textContent = produk.penerbit;
+        tr.appendChild(penerbitTd);
+
+        const gambarTd = document.createElement("td");
+        if (produk.gambar) {
+          const img = document.createElement("img");
+          img.className = "gambar-preview";
+          img.src = produk.gambar;
+          img.alt = "Sampul " + produk.judul;
+          gambarTd.appendChild(img);
+        } else {
+          gambarTd.textContent = "-";
+        }
+        tr.appendChild(gambarTd);
+
+        const aksiTd = document.createElement("td");
+        const aksiWrap = document.createElement("div");
+        aksiWrap.className = "action-buttons";
+        aksiWrap.innerHTML = `
+          <button class="btn btn-edit btn-small" onclick="editProduk(${originalIndex})">Edit</button>
+          <button class="btn btn-delete btn-small" onclick="hapusProduk(${originalIndex})">Hapus</button>
+        `;
+        aksiTd.appendChild(aksiWrap);
+        tr.appendChild(aksiTd);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function toggleSelectItem(index, isChecked) {
+      if (isChecked) {
+        if (!selectedItems.includes(index)) {
+          selectedItems.push(index);
+        }
+      } else {
+        const itemIndex = selectedItems.indexOf(index);
+        if (itemIndex > -1) {
+          selectedItems.splice(itemIndex, 1);
+        }
+      }
+    }
+
+    function deleteSelected() {
+      if (selectedItems.length === 0) {
+        alert("Tidak ada buku yang dipilih.");
+        return;
+      }
+
+      if (confirm(`Yakin ingin menghapus ${selectedItems.length} buku yang dipilih?`)) {
+        selectedItems.sort((a, b) => b - a);
+
+        selectedItems.forEach(index => {
+          produkList.splice(index, 1);
+        });
+
+        localStorage.setItem("produkList", JSON.stringify(produkList));
+        selectedItems = [];
+        renderTabel();
+        alert("Buku yang dipilih berhasil dihapus.");
+      }
+    }
+
+    function editProduk(index) {
+      showForm(index);
+    }
+
+    function hapusProduk(index) {
+      if (confirm("Yakin ingin menghapus buku ini?")) {
+        produkList.splice(index, 1);
+        selectedItems = selectedItems
+          .filter(selectedIndex => selectedIndex !== index)
+          .map(selectedIndex => selectedIndex > index ? selectedIndex - 1 : selectedIndex);
+        localStorage.setItem("produkList", JSON.stringify(produkList));
+        renderTabel();
+      }
+    }
+
+    function deleteAll() {
+      if (confirm("Yakin ingin menghapus semua data buku?")) {
+        produkList = [];
+        selectedItems = [];
+        localStorage.setItem("produkList", JSON.stringify(produkList));
+        renderTabel();
+      }
+    }
+
+    function tutupForm() {
+      document.getElementById("formPopup").style.display = "none";
+      document.getElementById("overlay").style.display = "none";
+      clearForm();
+      editIndex = null;
+    }
+
+    function searchProduk() {
+      const searchText = document.getElementById("searchInput").value.trim();
+      renderTabel(searchText);
+    }
+
+    function clearSearch() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("clearSearch").style.display = "none";
+      renderTabel();
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      ["isLoggedIn", "user", "username", "token"].forEach((key) => {
+        localStorage.removeItem(key);
+      });
+      alert("Logout berhasil!");
+      return true;
+    }
+
+    // Init
+    renderTabel();
+    renderSearchHistory();
+  </script>
+</body>
+</html>m  
